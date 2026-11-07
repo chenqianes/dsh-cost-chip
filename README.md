@@ -2,6 +2,7 @@
 
 [![tests](https://github.com/chenqianes/dsh-cost-chip/actions/workflows/test.yml/badge.svg)](https://github.com/chenqianes/dsh-cost-chip/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/dsh-cost-chip.svg)](https://www.npmjs.com/package/dsh-cost-chip)
 
 > A cost chip for [DeepSeek Harness](https://github.com/deepseek-ai): shows what the current
 > session has actually cost — with a breakdown by billing bucket (cache hit / cache miss /
@@ -9,6 +10,14 @@
 > pricing page, and each call is priced with the table in force **at the moment it ran**.
 >
 > 中文说明在下方。`Node ≥ 22.15`（用到 `zlib.zstdDecompressSync`）。
+
+安装（桌面端用的是 `desktop` profile；跑 `dsh web` 的换成 `web`）：
+
+```bash
+dsh plugin --profile desktop add dsh-cost-chip
+```
+
+装完**重启 DSH**。卸载把 `add` 换成 `remove` 即可。
 
 在 DSH Web GUI 输入框下方**上下文百分比圆环的旁边**放一个小药丸，显示本会话花费；点开是今日花费、成本构成与 DeepSeek 余额。
 
@@ -158,9 +167,25 @@ DeepSeek 余额接口。三个都可以用环境变量换成你自己的镜像�
 
 插件是 profile 级的：装一次，这个 profile 下的所有会话都有。
 
-### 用脚本装（推荐）
+### 从 npm 装（推荐）
 
-桌面端启动的是 **desktop** profile（不是 `web`），目录要给对：
+```bash
+dsh plugin --profile desktop add dsh-cost-chip
+```
+
+- 桌面端启动的是 **desktop** profile；用 `dsh web` 命令行启动的换成 `web`。
+- `dsh plugin` 是 pnpm 的透传：这条命令等价于在 profile 里 `pnpm add dsh-cost-chip`，
+  并把本包补进 `dsh.profile.bundles`。
+- 装完**重启 DSH**（bundle 列表是启动时读的）。
+- 卸载：`dsh plugin --profile desktop remove dsh-cost-chip`。
+
+不想动 profile，也可以先看一眼包里有什么：
+
+```bash
+npm pack --dry-run      # 9 个文件：lib/ + cordis.patch.yml + README + LICENSE
+```
+
+### 从源码装（要改代码时）
 
 ```powershell
 git clone https://github.com/chenqianes/dsh-cost-chip.git
@@ -173,7 +198,7 @@ node dev/install.mjs "$env:USERPROFILE\.dsh\profiles\desktop"
 `package.json` 补一条 `link:` 依赖；把本包加进 `dsh.profile.bundles`。
 改动前会写 `*.before-dsh-cost-chip.bak` 备份。
 
-### 手动装（不想跑脚本）
+### 手动装（不想跑脚本，也不想走 npm）
 
 1. 在 `~/.dsh/profiles/desktop/package.json` 的 `dependencies` 里加
    `"dsh-cost-chip": "link:D:\\path\\to\\dsh-cost-chip"`；
@@ -185,6 +210,10 @@ node dev/install.mjs "$env:USERPROFILE\.dsh\profiles\desktop"
 ### 卸载
 
 ```powershell
+# 从 npm 装的
+dsh plugin --profile desktop remove dsh-cost-chip
+
+# 从源码装的
 node dev/install.mjs "$env:USERPROFILE\.dsh\profiles\desktop" --remove
 ```
 

@@ -1,10 +1,10 @@
 {
   "name": "dsh-cost-chip",
   "version": "0.4.0",
-  "private": true,
   "description": "会话花费与余额：上下文环右侧的花费药丸，点开看今日花费、成本构成与 DeepSeek 余额；单价与法定节假日都跟官方口径同步。",
   "keywords": [
     "dsh",
+    "dsh-plugin",
     "deepseek-harness",
     "plugin",
     "cost",
@@ -30,13 +30,15 @@
     "./client": {
       "default": "./lib/client.js"
     },
+    "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
   },
   "scripts": {
     "test": "node dev/test-core.mjs",
     "test:client": "node dev/probe-client.mjs",
     "test:pricing": "node dev/probe-pricing.mjs",
-    "probe": "node dev/probe-summary.mjs"
+    "probe": "node dev/probe-summary.mjs",
+    "prepack": "node dev/test-core.mjs && node dev/probe-client.mjs"
   },
   "engines": {
     "node": ">=22.15"
