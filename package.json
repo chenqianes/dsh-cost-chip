@@ -38,7 +38,11 @@
     "test:client": "node dev/probe-client.mjs",
     "test:pricing": "node dev/probe-pricing.mjs",
     "probe": "node dev/probe-summary.mjs",
-    "prepack": "node dev/test-core.mjs && node dev/probe-client.mjs"
+    "prepack": "node dev/test-core.mjs && node dev/probe-client.mjs",
+    "publish:npm": "npm publish --registry=https://registry.npmjs.org"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "engines": {
     "node": ">=22.15"
