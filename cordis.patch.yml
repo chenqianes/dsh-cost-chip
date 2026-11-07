@@ -1,0 +1,5 @@
+# dsh-cost-chip 的 bundle 层：profile 的 package.json 把本包列进
+# `dsh.profile.bundles` 后，loader 会读这个文件并插入下面这条入口。
+- insert:
+    - id: dsh-cost-chip
+      name: dsh-cost-chip

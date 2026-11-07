@@ -1,0 +1,33 @@
+# 依赖
+node_modules/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 运行产物
+*.log
+coverage/
+dist/
+*.tsbuildinfo
+
+# 本地环境变量（如果有人把 key 放进 .env，绝不能进仓库）
+.env
+.env.*
+!.env.example
+
+# 凭据文件：正常在 $DSH_HOME 下，但放仓库里也绝不能被跟踪
+.credentials.yaml
+.credentials.yml
+.credentials.json
+
+# 插件运行时会写在 $DSH_HOME 下的东西，不该出现在仓库里
+dsh-cost-chip.state.json
+dsh-cost-chip.pricing.json
+dsh-cost-chip.holidays.json
+*.before-dsh-cost-chip.bak
+
+# 解开 asar 后的临时目录
+.dsh-asar/

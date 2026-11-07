@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # 没有依赖要装：全部是 node: 内置模块。
+      - name: 语法检查
+        run: |
+          node --check lib/index.js
+          node --check lib/client.js
+          node --check lib/pricing.js
+          node --check lib/holidays.js
+
+      - name: 核心回归（解码 / 计价 / 价表时间线）
+        run: node dev/test-core.mjs
+
+      # 没有 $DSH_HOME 的真实日志时，上面那条会跳过「真实日志」用例，
+      # 下面的合成数据用例不依赖任何本地状态。
+      - name: 浏览器半边离线渲染
+        run: node dev/probe-client.mjs
+
+      - name: 定价页解析（离线 fixture）
+        run: node dev/probe-pricing.mjs

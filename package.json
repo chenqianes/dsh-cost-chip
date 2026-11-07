@@ -1,0 +1,59 @@
+{
+  "name": "dsh-cost-chip",
+  "version": "0.4.0",
+  "private": true,
+  "description": "会话花费与余额：上下文环右侧的花费药丸，点开看今日花费、成本构成与 DeepSeek 余额；单价与法定节假日都跟官方口径同步。",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "cost",
+    "token",
+    "usage",
+    "deepseek"
+  ],
+  "homepage": "https://github.com/chenqianes/dsh-cost-chip#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenqianes/dsh-cost-chip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chenqianes/dsh-cost-chip/issues"
+  },
+  "author": "chenqianes",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "node dev/test-core.mjs",
+    "test:client": "node dev/probe-client.mjs",
+    "test:pricing": "node dev/probe-pricing.mjs",
+    "probe": "node dev/probe-summary.mjs"
+  },
+  "engines": {
+    "node": ">=22.15"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT"
+}
