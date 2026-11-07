@@ -64,7 +64,8 @@ const fixture = {
       { name: 'web-app', cost: 3.52, calls: 199 },
     ],
   },
-  balance: { ok: true, currency: 'CNY', total: '47.53' },
+  // 账户服务给的是高精度十进制字符串，界面上必须压到两位
+  balance: { ok: true, currency: 'CNY', total: '73.7221026000000000' },
   pricing: {
     currency: 'CNY',
     peak: true,
@@ -215,7 +216,7 @@ const collected = texts(tree)
 console.log('texts:', JSON.stringify(collected))
 const expected = [
   // 药丸 + 三块汇总
-  '¥0.42', '¥1.38', '¥7.63', '¥47.53',
+  '¥0.42', '¥1.38', '¥7.63', '¥73.72',
   '¥0.42 · 30 次调用', '¥0.96 · 81 次调用',
   '本会话', '今日', '之前', '今日全部', '余额',
   'data-pipeline', '· web-app', '¥4.11', '¥3.52',
@@ -224,7 +225,7 @@ const expected = [
   '成本构成 · 本会话今日',
   '输出', '¥0.20 · 48%',
   '缓存未命中', '¥0.18 · 43%',
-  '缓存命中', '¥0.04 · 10%',
+  '缓存命中', '¥0.04 · 9%',
   // 多模型时才列模型行，且去掉 deepseek- 前缀
   'flash', '¥0.30', 'v4-pro', '¥0.12',
 ]
@@ -242,5 +243,17 @@ for (const want of expected) {
 const titles = props(tree).map((item) => item.title).filter((value) => typeof value === 'string')
 if (!titles.some((title) => title.includes('tokens'))) throw new Error('bucket 行应带 token 悬停')
 if (collected.some((text) => text.includes('tokens'))) throw new Error('token 数不该显示成文本')
+
+// 账户服务的高精度余额串不能原样漏到界面上
+if (collected.some((text) => text.includes('73.7221026'))) throw new Error('余额应压到两位小数')
+
+// 三个计费桶的占比必须和成 100（各自四舍五入会和成 101 或 99）
+const shares = collected
+  .map((text) => /· (\d+)%$/.exec(text))
+  .filter((match) => match !== null)
+  .map((match) => Number(match[1]))
+if (shares.length !== 3) throw new Error(`应有 3 个占比，实际 ${shares.length}`)
+const shareSum = shares.reduce((sum, value) => sum + value, 0)
+if (shareSum !== 100) throw new Error(`占比之和应为 100，实际 ${shareSum}（${shares.join('+')}）`)
 
 console.log('OK')
